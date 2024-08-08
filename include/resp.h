@@ -22,6 +22,14 @@ public:
     std::vector<Value> array;
 
     Value() : num(0) {}
+    std::string translateToResp();
+
+private:
+    std::string valueString();
+    std::string valueBulk();
+    std::string valueArray();
+    std::string valuError();
+    std::string valueNull();
 };
 
 class Resp {
