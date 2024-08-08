@@ -1,9 +1,11 @@
 ## C++ Implementation of TCP Redis Server
 This is an implementation of a simple version of Redis in-memory database using C++. It serves Redis via TCP socket to accept connections on the custom Redis port 6379. 
 The server parses RESP formatted input and aims to support plain in-memory operations:
-  - [ ] GET operation to get item by key
-  - [ ] SET operation to set <key, value> pair item in the database
-  - [ ] DEL operation to delete item by key
+  - [ ] PING
+  - [ ] SET 
+  - [ ] GET
+  - [ ] HSET
+  - [ ] HGET
 
 ### Requirements and Running the Code:
 The code is compiled using clang and current flags require C++ STD=17 standard. A Makefile has been provided to ease compilation. 
