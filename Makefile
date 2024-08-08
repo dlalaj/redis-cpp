@@ -33,4 +33,8 @@ clean:
 		rm -rf "$$dir"/*; \
 	done
 
+# Clang style formatting
+format:
+	clang-format -i $(SRCS)
+
 .PHONY: all clean
