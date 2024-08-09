@@ -22,12 +22,16 @@ public:
     std::vector<Value> array;
 
     Value() : num(0) {}
+    Value(const std::string& typ_, const std::string& str_, int num_, 
+        const std::string& bulk_)
+        : typ(typ_), str(str_), num(num_), bulk(bulk_) {}
     std::string translateToResp();
 
 private:
     std::string valueString();
     std::string valueBulk();
     std::string valueArray();
+    std::string valueInteger();
     std::string valuError();
     std::string valueNull();
 };

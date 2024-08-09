@@ -1,5 +1,59 @@
 #include "resp.h"
 
+std::string Value::translateToResp() {
+  if (this->typ == "array") {
+    return this->valueArray();
+  } else if (this->typ == "bulk") {
+    return this->valueBulk();
+  } else if (this->typ == "string") {
+    return this->valueString();
+  } else if (this->typ == "null") {
+    return this->valueNull();
+  } else if (this->typ == "error") {
+    return this->valuError();
+  } else {
+    return std::string();
+  }
+}
+
+std::string Value::valueString() {
+  std::string result = std::string(1, STRING) + this->str + '\r' + '\n';
+  return result;
+}
+
+std::string Value::valueBulk() {
+  int bulkLen = this->bulk.length();
+  std::string result = std::string(1, BULK) + std::to_string(bulkLen) + '\r' +
+                       '\n' + this->bulk + '\r' + '\n';
+  return result;
+}
+
+std::string Value::valueArray() {
+  int arrLen = this->array.size();
+  std::string result =
+      std::string(1, ARRAY) + std::to_string(arrLen) + '\r' + '\n';
+  // Recursively translate all sub values inside the array
+  for (int i = 0; i < arrLen; i++) {
+    result += this->array[i].translateToResp();
+  }
+}
+
+std::string Value::valueInteger()
+{
+  std::string result = std::string(1, INTEGER) + std::to_string(this->num) + '\r' + '\n';
+  return result;
+}
+
+std::string Value::valuError() {
+  std::string result = std::string(1, ERROR) + this->str + '\r' + '\n';
+  return result;
+}
+
+std::string Value::valueNull() {
+  std::string result = "$-1\r\n";
+  return result;
+}
+
 Resp::Resp(std::istream &input) : reader(input) {}
 
 std::string Resp::readLine() {
@@ -70,52 +124,4 @@ Value Resp::readBulk() {
   readLine(); // Read the trailing CRLF
 
   return v;
-}
-
-std::string Value::translateToResp() {
-  if (this->typ == "array") {
-    return this->valueArray();
-  } else if (this->typ == "bulk") {
-    return this->valueBulk();
-  } else if (this->typ == "string") {
-    return this->valueString();
-  } else if (this->typ == "null") {
-    return this->valueNull();
-  } else if (this->typ == "error") {
-    return this->valuError();
-  } else {
-    return std::string();
-  }
-}
-
-std::string Value::valueString() {
-  std::string result = std::string(1, STRING) + this->str + '\r' + '\n';
-  return result;
-}
-
-std::string Value::valueBulk() {
-  int bulkLen = this->bulk.length();
-  std::string result = std::string(1, BULK) + std::to_string(bulkLen) + '\r' +
-                       '\n' + this->bulk + '\r' + '\n';
-  return result;
-}
-
-std::string Value::valueArray() {
-  int arrLen = this->array.size();
-  std::string result =
-      std::string(1, ARRAY) + std::to_string(arrLen) + '\r' + '\n';
-  // Recursively translate all sub values inside the array
-  for (int i = 0; i < arrLen; i++) {
-    result += this->array[i].translateToResp();
-  }
-}
-
-std::string Value::valuError() {
-  std::string result = std::string(1, ERROR) + this->str + '\r' + '\n';
-  return result;
-}
-
-std::string Value::valueNull() {
-  std::string result = "$-1\r\n";
-  return result;
 }
